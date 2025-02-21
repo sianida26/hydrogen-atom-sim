@@ -106,8 +106,7 @@ function wavefunctionSquared(
   l: number,
   m: number,
   r: number,
-  theta: number,
-  phi: number
+  theta: number
 ): number {
   return radialFunctionSquared(n, l, r) * sphericalHarmonicSquared(l, m, theta);
 }
@@ -120,8 +119,7 @@ function estimatePmax(n: number, l: number, m: number, rMax: number): number {
   for (let i = 0; i < samples; i++) {
     const r = Math.random() * rMax;
     const theta = Math.acos(1 - 2 * Math.random());
-    const phi = Math.random() * 2 * Math.PI;
-    const p = wavefunctionSquared(n, l, m, r, theta, phi) * r * r * Math.sin(theta);
+    const p = wavefunctionSquared(n, l, m, r, theta) * r * r * Math.sin(theta);
     if (p > maxP) maxP = p;
   }
   return maxP;
@@ -152,7 +150,7 @@ function generateOrbitalPointsSplit(
     const waveSign = R * PL * cosPart;
 
     // Probability element
-    const P = wavefunctionSquared(n, l, m, r, theta, phi) * r * r * Math.sin(theta);
+    const P = wavefunctionSquared(n, l, m, r, theta) * r * r * Math.sin(theta);
     if (Math.random() * Pmax < P) {
       const x = r * Math.sin(theta) * Math.cos(phi);
       const y = r * Math.sin(theta) * Math.sin(phi);
@@ -212,7 +210,7 @@ const params = {
 };
 
 const gui = new dat.GUI();
-const nController = gui.add(params, 'n', 1, 5, 1).name('n').onFinishChange(() => {
+gui.add(params, 'n', 1, 5, 1).name('n').onFinishChange(() => {
   lController.max(params.n - 1);
   if (params.l >= params.n) {
     params.l = params.n - 1;
